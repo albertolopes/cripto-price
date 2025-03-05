@@ -8,20 +8,7 @@ const PORT = 3000;
 
 const TELEGRAM_TOKEN = process.env.TELEGRAM_TOKEN;
 const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
-const COINGECKO_API_URL = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd";
 const URL = "https://coinmarketcap.com/currencies/bitcoin/";
-
-
-async function getBitcoinPrice() {
-    try {
-        const response = await axios.get(COINGECKO_API_URL);
-        const price = response.data.bitcoin.brl;
-        return price;
-    } catch (error) {
-        console.error("Erro ao obter o preço do Bitcoin:", error.message);
-        return null;
-    }
-}
 
 async function sendTelegramMessage(message) {
     const url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`;
@@ -51,10 +38,12 @@ async function getBitcoinPrice() {
     }
 }
 
-cron.schedule("*/20 * * * * *", async () => {
+cron.schedule("*/1 * * * *", async () => {
     const price = await getBitcoinPrice();
     if (price) {
-        const message = `🚀 O preço do Bitcoin é USD ${price.toLocaleString("pt-BR", { style: "currency", currency: "USD" })}`;
+        const message = `📢 *Atualização do Bitcoin* 🚀\n\n` +
+            `💰 *Preço atual:*  ${price.toLocaleString("en-US", { style: "currency", currency: "USD" })}\n\n` +
+            `📊 Atualizado a cada minuto.`;
         await sendTelegramMessage(message);
     }
 });
