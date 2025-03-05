@@ -2,7 +2,7 @@ name: Bitcoin Price Bot
 
 on:
   schedule:
-    - cron: "*/2 * * * *" # Executa a cada 30 minutos
+    - cron: "*/3 * * * *" # Executa a cada 3 minutos
   workflow_dispatch: # Permite execução manual
 
 jobs:
@@ -22,11 +22,14 @@ jobs:
         run: npm install
 
       - name: Verificar variáveis de ambiente
-        run: echo "TELEGRAM_TOKEN=${{ secrets.TELEGRAM_TOKEN }}" && echo "TELEGRAM_CHAT_ID=${{ secrets.TELEGRAM_CHAT_ID }}"
+        run: |
+          echo "TELEGRAM_TOKEN=${{ secrets.TELEGRAM_TOKEN }}"
+          echo "TELEGRAM_CHAT_ID=${{ secrets.TELEGRAM_CHAT_ID }}"
 
       - name: Rodar bot
-        run: node index.js
-        
+        run: |
+          echo "Iniciando o bot..."
+          node index.js
         env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
