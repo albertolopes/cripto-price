@@ -1,6 +1,8 @@
+name: Bitcoin Price Bot
+
 on:
   schedule:
-    - cron: "*/30 * * * *" # A cada 30 minutos
+    - cron: "*/30 * * * *" # Executa a cada 30 minutos
   workflow_dispatch: # Permite execução manual
 
 jobs:
@@ -20,3 +22,6 @@ jobs:
 
       - name: Rodar bot
         run: node index.js
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
