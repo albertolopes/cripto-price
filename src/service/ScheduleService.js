@@ -35,8 +35,7 @@ class ScheduleService {
             const price = await this.getBitcoinPrice();
             if (price) {
                 const message = `📢 *Atualização do Bitcoin* 🚀\n\n` +
-                    `💰 *Preço atual:*  ${price.toLocaleString("en-US", { style: "currency", currency: "USD" })}\n\n` +
-                    `📊 Atualizado a cada 30 minutos.`;
+                    `💰 *Preço atual:*  ${price.toLocaleString("en-US", { style: "currency", currency: "USD" })}`;
 
                 await telegramClient.sendTelegramMessage(chat.message.chat.id, message);
             }
