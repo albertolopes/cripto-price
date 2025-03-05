@@ -1,7 +1,6 @@
 const express = require("express");
 const axios = require("axios");
 const cheerio = require("cheerio");
-const cron = require("node-cron");
 require('dotenv').config({ path: '.env.local' });
 
 const app = express();
@@ -27,9 +26,7 @@ async function sendTelegramMessage(message) {
 async function getBitcoinPrice() {
     try {
         const { data } = await axios.get(URL);
-
         const $ = cheerio.load(data);
-
         const priceElement = $('span[data-test="text-cdp-price-display"]');
         const price = priceElement.text().trim();
         return price;
@@ -39,7 +36,7 @@ async function getBitcoinPrice() {
     }
 }
 
-cron.schedule("*/30 * * * *", async () => {
+(async () => {
     const price = await getBitcoinPrice();
     if (price) {
         const message = `📢 *Atualização do Bitcoin* 🚀\n\n` +
@@ -47,8 +44,7 @@ cron.schedule("*/30 * * * *", async () => {
             `📊 Atualizado a cada 30 minutos.`;
         await sendTelegramMessage(message);
     }
-});
-
+})();
 
 app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`);
