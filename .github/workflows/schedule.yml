@@ -2,12 +2,13 @@ name: Bitcoin Price Bot
 
 on:
   schedule:
-    - cron: "*/30 * * * *" # Executa a cada 30 minutos
+    - cron: "*/20 * * * *" # Executa a cada 30 minutos
   workflow_dispatch: # Permite execução manual
 
 jobs:
   run-bot:
     runs-on: ubuntu-latest
+    timeout-minutes: 1  # Interrompe o job após 1 minuto
     steps:
       - name: Checkout do código
         uses: actions/checkout@v3
