@@ -1,0 +1,23 @@
+name: Bitcoin Price Bot
+
+on:
+  schedule:
+    - cron: "*/30 * * * *" # A cada 30 minutos
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v3
+
+      - name: Instalar Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "22"
+
+      - name: Instalar dependências
+        run: npm install
+
+      - name: Rodar bot
+        run: node index.js
