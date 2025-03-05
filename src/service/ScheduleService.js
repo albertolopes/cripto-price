@@ -28,8 +28,6 @@ class ScheduleService {
         }
     }
 
-
-    Copy
     async enviarNotificacao() {
         let chats = await telegramClient.buscarChats();
 
