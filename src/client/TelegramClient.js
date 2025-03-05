@@ -12,11 +12,9 @@ class TelegramClient {
         try {
             const response = await axios.get(`${this.apiUrl}/bot${this.token}/getUpdates`);
             if (response.status === 200 && response.data.ok) {
-                console.log('Dados recebidos:', response.data.result);
 
                 return new TelegramChatDTO(response.data);
             } else {
-                console.log('Resposta inválida:', response.data);
                 return [];
             }
         } catch (error) {
