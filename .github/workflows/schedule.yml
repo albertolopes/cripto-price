@@ -22,6 +22,10 @@ jobs:
 
       - name: Rodar bot
         run: node index.js
+        
+      - name: Verificar variáveis de ambiente
+        run: echo "TELEGRAM_TOKEN=${{ secrets.TELEGRAM_TOKEN }}" && echo "TELEGRAM_CHAT_ID=${{ secrets.TELEGRAM_CHAT_ID }}"
+        
         env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
