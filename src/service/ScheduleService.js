@@ -28,19 +28,29 @@ class ScheduleService {
         }
     }
 
+
+    Copy
     async enviarNotificacao() {
         let chats = await telegramClient.buscarChats();
 
-        for (const chat of chats.result) {
-            const price = await this.getBitcoinPrice();
-            if (price) {
-                const message = `📢 *Atualização do Bitcoin* 🚀\n\n` +
-                    `💰 *Preço atual:*  ${price.toLocaleString("en-US", { style: "currency", currency: "USD" })}`;
+        const uniqueChatIds = new Set();
 
-                await telegramClient.sendTelegramMessage(chat.message.chat.id, message);
+        for (const chat of chats.result) {
+            const chatId = chat.message.chat.id;
+
+            if (!uniqueChatIds.has(chatId)) {
+                uniqueChatIds.add(chatId);
+
+                const price = await this.getBitcoinPrice();
+                if (price) {
+                    const message = `📢 *Atualização do Bitcoin* 🚀\n\n` +
+                        `💰 *Preço atual:*  ${price.toLocaleString("en-US", { style: "currency", currency: "USD" })}`;
+
+                    await telegramClient.sendTelegramMessage(chatId, message);
+                }
             }
         }
-    };
+    }
 }
 
 module.exports = ScheduleService;
