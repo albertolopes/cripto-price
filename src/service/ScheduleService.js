@@ -34,17 +34,20 @@ class ScheduleService {
         const uniqueChatIds = new Set();
 
         for (const chat of chats.result) {
-            const chatId = chat.message.chat != null ? chat.message.chat.id : null;
 
-            if (!uniqueChatIds.has(chatId)) {
-                uniqueChatIds.add(chatId);
 
-                const price = await this.getBitcoinPrice();
-                if (price) {
-                    const message = `📢 *Atualização do Bitcoin* 🚀\n\n` +
-                        `💰 *Preço atual:*  ${price.toLocaleString("en-US", { style: "currency", currency: "USD" })}`;
+            if(chat.message != null){
+                const chatId = chat.message.chat.id;
+                if (!uniqueChatIds.has(chatId)) {
+                    uniqueChatIds.add(chatId);
 
-                    await telegramClient.sendTelegramMessage(chatId, message);
+                    const price = await this.getBitcoinPrice();
+                    if (price) {
+                        const message = `📢 *Atualização do Bitcoin* 🚀\n\n` +
+                            `💰 *Preço atual:*  ${price.toLocaleString("en-US", { style: "currency", currency: "USD" })}`;
+
+                        await telegramClient.sendTelegramMessage(chatId, message);
+                    }
                 }
             }
         }
