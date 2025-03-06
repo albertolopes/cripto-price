@@ -2,7 +2,7 @@ name: Bitcoin Price Bot
 
 on:
   schedule:
-    - cron: "*/3 * * * *"  # Executa a cada 3 minutos
+    - cron: "*/30 * * * *"
   workflow_dispatch:  # Permite execução manual
 
 jobs:
