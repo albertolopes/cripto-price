@@ -34,7 +34,7 @@ class ScheduleService {
         const uniqueChatIds = new Set();
 
         for (const chat of chats.result) {
-            const chatId = chat.message.chat.id;
+            const chatId = chat.message.chat != null ? chat.message.chat.id : null;
 
             if (!uniqueChatIds.has(chatId)) {
                 uniqueChatIds.add(chatId);
