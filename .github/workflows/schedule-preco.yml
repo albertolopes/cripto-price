@@ -8,7 +8,7 @@ on:
 jobs:
   run-bot:
     runs-on: ubuntu-latest
-    timeout-minutes: 1  # Interrompe o job após 1 minuto
+    timeout-minutes: 2  # O job será interrompido após 2 minutos
     steps:
       - name: Log de execução (para verificar se o cron está funcionando)
         run: echo "Workflow acionado automaticamente ou manualmente!"
@@ -24,15 +24,17 @@ jobs:
       - name: Instalar dependências
         run: npm install
 
-      - name: Verificar variáveis de ambiente
-        run: |
-          echo "TELEGRAM_TOKEN=${{ secrets.TELEGRAM_TOKEN }}"
-          echo "TELEGRAM_CHAT_ID=${{ secrets.TELEGRAM_CHAT_ID }}"
-
       - name: Rodar bot
         run: |
           echo "Iniciando o bot..."
-          node index.js
+          nohup node index.js &
+          sleep 5  # Aguarda o serviço rodando por 5 segundos
+
+      - name: Chamar o endpoint /preco
+        run: |
+          echo "Chamando o endpoint /preco"
+          curl http://localhost:3000/preco
         env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          DEEPSEEK_TOKEN: ${{ secrets.DEEPSEEK_TOKEN }}
