@@ -5,10 +5,14 @@ const dbURI = `mongodb+srv://${process.env.MONGO_USUARIO}:${process.env.MONGO_SE
 
 const connectDB = async () => {
   try {
-    await mongoose.connect(dbURI);
-    console.log('Conectado ao MongoDB');
-  } catch (error) {
-    throw new Error('Erro ao conectar com MongoDB. ' + error)
+    await mongoose.connect(dbURI, {
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 45000,
+    });
+    console.log('Conectado ao MongoDB com sucesso');
+  } catch (err) {
+    console.error('Erro ao conectar com MongoDB:', err);
+    throw new Error('Erro ao conectar com MongoDB');
   }
 };
 
