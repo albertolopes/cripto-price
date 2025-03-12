@@ -1,19 +1,16 @@
 const axios = require("axios");
 const TelegramChatDTO = require("../dto/TelegramChatDTO");
 
-require('dotenv').config({ path: '.env.local' });
-
-const TELEGRAM_TOKEN = process.env.TELEGRAM_TOKEN;
-const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
-const URL = "https://api.telegram.org"
-
 class TelegramClient {
-    constructor() {
+    constructor(token, chatId, apiUrl = "https://api.telegram.org") {
+        this.token = token;
+        this.chatId = chatId;
+        this.apiUrl = apiUrl;
     }
 
     async buscarChats() {
         try {
-            const response = await axios.get(`${URL}/bot${TELEGRAM_TOKEN}/getUpdates`);
+            const response = await axios.get(`${this.apiUrl}/bot${this.token}/getUpdates`);
             console.log(response)
             if (response.status === 200) {
                 console.log(response)
@@ -28,10 +25,10 @@ class TelegramClient {
     }
 
     async sendTelegramMessage(id, message) {
-        const url = `${URL}/bot${TELEGRAM_TOKEN}/sendMessage`;
+        const url = `${this.apiUrl}/bot${this.token}/sendMessage`;
         try {
             await axios.post(url, {
-                chat_id: id ?? TELEGRAM_CHAT_ID,
+                chat_id: id ?? this.chatId,
                 text: message,
             });
             console.log("Mensagem enviada com sucesso!");
