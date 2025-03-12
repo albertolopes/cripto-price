@@ -34,9 +34,8 @@ class ChatService {
       }
 
       await Chat.insertMany(newChats);
-      console.log(`${newChats.length} novos chats registrados com sucesso.`);
     } catch (error) {
-      console.error('Erro ao salvar os chats:', error);
+      throw new Error(error)
     }
   }
 
@@ -45,8 +44,7 @@ class ChatService {
       const chats = await Chat.find({});
       return chats;
     } catch (error) {
-      console.error('Erro ao buscar os chats:', error);
-      return [];
+      throw new Error(error)
     }
   }
 }
