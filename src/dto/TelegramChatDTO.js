@@ -63,6 +63,7 @@ class TelegramChatMember {
 
 class TelegramChatDTO {
     constructor(payload) {
+        this.ok = payload.ok;
         this.result = payload.result.map(update => new TelegramUpdateResult(update));
     }
 }
