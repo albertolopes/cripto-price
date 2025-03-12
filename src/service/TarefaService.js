@@ -24,8 +24,7 @@ class TarefaService {
             const { data } = await axios.get(URL);
             const $ = cheerio.load(data);
             const priceElement = $('span[data-test="text-cdp-price-display"]');
-            const price = priceElement.text().trim();
-            return price;
+            return priceElement.text().trim();
         } catch (error) {
             console.error("Erro ao obter o preço do Bitcoin:", error.message);
             return null;
@@ -52,8 +51,7 @@ class TarefaService {
 
             return newsLinks;
         } catch (error) {
-            console.error("Erro ao obter os links das notícias:", error.message);
-            return [];
+            throw new Error(error)
         }
     }
 
@@ -82,20 +80,21 @@ class TarefaService {
                 content: article.content
             };
         } catch (error) {
-            console.error("Erro ao obter os dados do artigo:", error.message);
-            return null;
+            throw new Error(error)
         }
     }
 
     async enviarNoticia() {
         let links = await this.getCryptoNewsLinks();
 
-        let noticia = await this.getArticleData(links[0]);
+        let noticia;
+        let retries = 0;
 
-        do{
-            noticia = await this.getArticleData(links[0]);
-        }
-        while (noticia.content === undefined);
+        do {
+            noticia = await this.getArticleData(links[retries]);
+            retries++;
+
+        } while (noticia.content === undefined || noticia.content === null);
 
 
         let newsletter = await deepSeekClient.chat({
