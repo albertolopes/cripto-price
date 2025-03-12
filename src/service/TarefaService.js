@@ -5,14 +5,11 @@ const DeepSeekClient = require("../client/DeepSeekClient")
 
 require('dotenv').config({ path: '.env.local' });
 
-const TELEGRAM_TOKEN = process.env.TELEGRAM_TOKEN;
-const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
-const DEEPSEEK_TOKEN = process.env.DEEPSEEK_TOKEN;
 const URL = "https://coinmarketcap.com/currencies/bitcoin/";
 const NEWS_URL = "https://coinmarketcap.com/headlines/news/";
 
-const telegramClient = new TelegramClient(TELEGRAM_TOKEN, TELEGRAM_CHAT_ID);
-const deepSeekClient = new DeepSeekClient(DEEPSEEK_TOKEN);
+const telegramClient = new TelegramClient();
+const deepSeekClient = new DeepSeekClient();
 
 class TarefaService {
 

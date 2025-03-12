@@ -1,16 +1,19 @@
 const axios = require("axios");
 const TelegramChatDTO = require("../dto/TelegramChatDTO");
 
+require('dotenv').config({ path: '.env.local' });
+
+const TELEGRAM_TOKEN = process.env.TELEGRAM_TOKEN;
+const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
+const URL = "https://api.telegram.org"
+
 class TelegramClient {
-    constructor(token, chatId, apiUrl = "https://api.telegram.org") {
-        this.token = token;
-        this.chatId = chatId;
-        this.apiUrl = apiUrl;
+    constructor() {
     }
 
     async buscarChats() {
         try {
-            const response = await axios.get(`${this.apiUrl}/bot${this.token}/getUpdates`);
+            const response = await axios.get(`${URL}/bot${TELEGRAM_TOKEN}/getUpdates`);
             console.log(response)
             if (response.status === 200) {
                 console.log(response)
@@ -20,17 +23,15 @@ class TelegramClient {
                 return [];
             }
         } catch (error) {
-            console.error('Erro ao fazer a requisição para buscar chats:', error.message)
-            throw error + `${this.apiUrl}/bot${this.token}/getUpdates`
-            return new TelegramChatDTO();
+            throw new Error(errorMessage);
         }
     }
 
     async sendTelegramMessage(id, message) {
-        const url = `${this.apiUrl}/bot${this.token}/sendMessage`;
+        const url = `${URL}/bot${TELEGRAM_TOKEN}/sendMessage`;
         try {
             await axios.post(url, {
-                chat_id: id ?? this.chatId,
+                chat_id: id ?? TELEGRAM_CHAT_ID,
                 text: message,
             });
             console.log("Mensagem enviada com sucesso!");
