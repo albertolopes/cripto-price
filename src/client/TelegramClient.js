@@ -11,6 +11,7 @@ class TelegramClient {
     async buscarChats() {
         try {
             const response = await axios.get(`${this.apiUrl}/bot${this.token}/getUpdates`);
+            console.log(response)
             if (response.status === 200) {
                 console.log(response)
                 console.log("AQUI")
@@ -19,7 +20,8 @@ class TelegramClient {
                 return [];
             }
         } catch (error) {
-            console.error('Erro ao fazer a requisição para buscar chats:', error.message);
+            console.error('Erro ao fazer a requisição para buscar chats:', error.message)
+            throw new error
             return new TelegramChatDTO();
         }
     }
