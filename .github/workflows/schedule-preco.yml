@@ -28,7 +28,7 @@ jobs:
         run: |
           echo "Iniciando o bot..."
           nohup node index.js &
-          sleep 20 # Aguarda o serviço rodando por 5 segundos
+          sleep 5 # Aguarda o serviço rodando por 5 segundos
 
       - name: Chamar o endpoint /preco e registrar resposta
         run: |
