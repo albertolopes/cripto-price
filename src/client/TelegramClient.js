@@ -11,10 +11,7 @@ class TelegramClient {
     async buscarChats() {
         try {
             const response = await axios.get(`${this.apiUrl}/bot${this.token}/getUpdates`);
-            console.log(response)
             if (response.status === 200) {
-                console.log(response)
-                console.log("AQUI")
                 return new TelegramChatDTO(response.data);
             } else {
                 return [];

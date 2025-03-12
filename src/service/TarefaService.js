@@ -88,13 +88,23 @@ class TarefaService {
         let links = await this.getCryptoNewsLinks();
 
         let noticia;
-        let retries = 0;
+        let tentativa = 0;
 
         do {
-            noticia = await this.getArticleData(links[retries]);
-            retries++;
+            noticia = await this.getArticleData(links[tentativa]);
+            tentativa++;
 
-        } while (noticia.content === undefined || noticia.content === null);
+            if (noticia && noticia.content !== undefined && noticia.content !== null) {
+                break;
+            }
+
+            console.log("Conteúdo inválido ou não encontrado. Tentando novamente...");
+
+            if (tentativa >= links.length) {
+                throw new Error("Limite de tentativas atingido");
+            }
+
+        } while (true);
 
 
         let newsletter = await deepSeekClient.chat({
