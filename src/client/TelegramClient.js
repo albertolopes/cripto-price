@@ -23,7 +23,7 @@ class TelegramClient {
                 return [];
             }
         } catch (error) {
-            throw new Error(errorMessage);
+            throw new Error(error);
         }
     }
 
