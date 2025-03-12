@@ -8,7 +8,7 @@ on:
 jobs:
   run-bot:
     runs-on: ubuntu-latest
-    timeout-minutes: 5  # O job será interrompido após 2 minutos
+    timeout-minutes: 5  # O job será interrompido após 5 minutos
     steps:
       - name: Log de execução (para verificar se o cron está funcionando)
         run: echo "Workflow acionado automaticamente ou manualmente!"
