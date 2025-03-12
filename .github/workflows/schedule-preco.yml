@@ -30,10 +30,12 @@ jobs:
           nohup node index.js &
           sleep 5  # Aguarda o serviço rodando por 5 segundos
 
-      - name: Chamar o endpoint /preco
+      - name: Chamar o endpoint /preco e registrar resposta
         run: |
-          echo "Chamando o endpoint /preco"
-          curl http://localhost:3000/preco
+          RESPONSE=$(curl -s -o response.txt -w "%{http_code}" http://localhost:3000/preco)
+          echo "Código de resposta: $RESPONSE"
+          echo "Corpo da resposta:"
+          cat response.txt
         env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
