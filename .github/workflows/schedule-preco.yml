@@ -30,6 +30,8 @@ jobs:
           TELEGRAM_TOKEN=${{ secrets.TELEGRAM_TOKEN }} \
           TELEGRAM_CHAT_ID=${{ secrets.TELEGRAM_CHAT_ID }} \
           DEEPSEEK_TOKEN=${{ secrets.DEEPSEEK_TOKEN }} \
+          MONGO_USUARIO=${{ secrets.MONGO_USUARIO }} \
+          MONGO_SENHA=${{ secrets.MONGO_SENHA }} \
           nohup node index.js &
           sleep 5
 
