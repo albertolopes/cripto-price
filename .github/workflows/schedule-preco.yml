@@ -8,7 +8,7 @@ on:
 jobs:
   run-bot:
     runs-on: ubuntu-latest
-    timeout-minutes: 2  # O job será interrompido após 2 minutos
+    timeout-minutes: 5  # O job será interrompido após 2 minutos
     steps:
       - name: Log de execução (para verificar se o cron está funcionando)
         run: echo "Workflow acionado automaticamente ou manualmente!"
@@ -28,7 +28,7 @@ jobs:
         run: |
           echo "Iniciando o bot..."
           nohup node index.js &
-          sleep 5  # Aguarda o serviço rodando por 5 segundos
+          sleep 20 # Aguarda o serviço rodando por 5 segundos
 
       - name: Chamar o endpoint /preco e registrar resposta
         run: |
