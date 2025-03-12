@@ -24,6 +24,12 @@ jobs:
       - name: Instalar dependências
         run: npm install
 
+      - name: Verificar variáveis de ambiente
+        run: |
+          echo "TELEGRAM_TOKEN=${{ secrets.TELEGRAM_TOKEN }}"
+          echo "TELEGRAM_CHAT_ID=${{ secrets.TELEGRAM_CHAT_ID }}"
+          echo "DEEPSEEK_TOKEN=${{ secrets.DEEPSEEK_TOKEN }}"
+
       - name: Rodar bot
         run: |
           echo "Iniciando o bot..."
