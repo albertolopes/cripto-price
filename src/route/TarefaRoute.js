@@ -4,7 +4,7 @@ const ScheduleService = require("../service/TarefaService");
 const router = express.Router();
 const scheduleService = new ScheduleService();
 
-router.get("/noticias", async (req, res) => {
+router.get("/noticia", async (req, res) => {
     try {
         await scheduleService.enviarNoticia();
         res
