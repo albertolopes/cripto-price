@@ -1,0 +1,16 @@
+const mongoose = require('mongoose');
+require('dotenv').config({ path: '.env.local' });
+
+const dbURI = `mongodb+srv://${process.env.MONGO_USUARIO}:${process.env.MONGO_SENHA}@cluster0.xgw6c.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
+
+const connectDB = async () => {
+  try {
+    await mongoose.connect(dbURI);
+    console.log('Conectado ao MongoDB');
+  } catch (err) {
+    console.error('Erro ao conectar ao MongoDB:', err);
+    process.exit(1);
+  }
+};
+
+module.exports = connectDB;

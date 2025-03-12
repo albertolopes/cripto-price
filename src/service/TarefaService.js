@@ -2,6 +2,7 @@ const axios = require("axios");
 const cheerio = require("cheerio");
 const TelegramClient = require("../client/TelegramClient");
 const DeepSeekClient = require("../client/DeepSeekClient")
+const ChatService = require("./ChatService")
 
 require('dotenv').config({ path: '.env.local' });
 
@@ -13,6 +14,7 @@ const NEWS_URL = "https://coinmarketcap.com/headlines/news/";
 
 const telegramClient = new TelegramClient(TELEGRAM_TOKEN, TELEGRAM_CHAT_ID);
 const deepSeekClient = new DeepSeekClient(DEEPSEEK_TOKEN);
+const chatService = new ChatService();
 
 class TarefaService {
 
@@ -131,19 +133,20 @@ class TarefaService {
         await this.enviarMensagemTelegram(message);
     }
 
-    async enviarMensagemTelegram(message){
+    async enviarMensagemTelegram(message) {
         let chats = await telegramClient.buscarChats();
+
+        await chatService.saveChats(chats.result);
+
+        let allChats = await chatService.getAllChats();
 
         const uniqueChatIds = new Set();
 
-        for (const chat of chats.result) {
-
-            if(chat.message != null){
-                const chatId = chat.message.chat.id;
-                if (!uniqueChatIds.has(chatId)) {
-                    uniqueChatIds.add(chatId);
-                    await telegramClient.sendTelegramMessage(chatId, message);
-                }
+        for (const chat of allChats) {
+            const chatId = chat.chat_id;
+            if (!uniqueChatIds.has(chatId)) {
+                uniqueChatIds.add(chatId);
+                await telegramClient.sendTelegramMessage(chatId, message);
             }
         }
     }
