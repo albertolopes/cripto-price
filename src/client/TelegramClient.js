@@ -21,7 +21,7 @@ class TelegramClient {
             }
         } catch (error) {
             console.error('Erro ao fazer a requisição para buscar chats:', error.message)
-            throw new error
+            throw error
             return new TelegramChatDTO();
         }
     }
