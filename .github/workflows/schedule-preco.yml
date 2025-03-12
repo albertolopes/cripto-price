@@ -1,4 +1,4 @@
-name: Bitcoin Price Bot
+name: schedule preco
 
 on:
   schedule:
