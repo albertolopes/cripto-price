@@ -1,31 +1,46 @@
-# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
-
-name: Node.js CI
+name: Schedule noticia
 
 on:
-  push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+  schedule:
+    - cron: "0 8-22/2 * * *"  # Roda a cada 2 horas entre 08:00 e 22:00
+  workflow_dispatch:  # Permite execução manual
 
 jobs:
-  build:
-
+  run-bot:
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [18.x, 20.x, 22.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-
+    timeout-minutes: 5  # O job será interrompido após 2 minutos
     steps:
-    - uses: actions/checkout@v4
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    - run: npm ci
-    - run: npm run build --if-present
-    - run: npm test
+      - name: Log de execução (para verificar se o cron está funcionando)
+        run: echo "Workflow acionado automaticamente ou manualmente!"
+
+      - name: Checkout do código
+        uses: actions/checkout@v3
+
+      - name: Instalar Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "22"
+
+      - name: Instalar dependências
+        run: npm install
+
+      - name: Verificar variáveis de ambiente
+        run: |
+          echo "TELEGRAM_TOKEN=${{ secrets.TELEGRAM_TOKEN }}"
+          echo "TELEGRAM_CHAT_ID=${{ secrets.TELEGRAM_CHAT_ID }}"
+          echo "DEEPSEEK_TOKEN=${{ secrets.DEEPSEEK_TOKEN }}"
+
+      - name: Rodar bot
+        run: |
+          echo "Iniciando o bot..."
+          TELEGRAM_TOKEN=${{ secrets.TELEGRAM_TOKEN }} \
+          TELEGRAM_CHAT_ID=${{ secrets.TELEGRAM_CHAT_ID }} \
+          DEEPSEEK_TOKEN=${{ secrets.DEEPSEEK_TOKEN }} \
+          nohup node index.js &
+          sleep 5
+
+      - name: Chamar o endpoint /noticia e registrar resposta
+        run: |
+          RESPONSE=$(curl -s -o response.txt -w "%{http_code}" http://localhost:3000/noticia)
+          echo "Código de resposta: $RESPONSE"
+          echo "Corpo da resposta:"
