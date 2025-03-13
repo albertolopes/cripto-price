@@ -17,7 +17,7 @@ class DeepSeekClient {
 
             if (response.data.choices && response.data.choices.length > 0 && response.data.choices[0].message) {
                 return {
-                    message: response.data.choices[0].message, // Conteúdo de choices[0].message
+                    message: response.data.choices[0].message,
                     usage: response.data.usage,
                     id: response.data.id,
                     created: response.data.created

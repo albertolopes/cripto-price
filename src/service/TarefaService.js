@@ -3,6 +3,7 @@ const cheerio = require("cheerio");
 const TelegramClient = require("../client/TelegramClient");
 const DeepSeekClient = require("../client/DeepSeekClient")
 const ChatService = require("./ChatService")
+const TwitterClient = require("../client/TwitterClient")
 
 require('dotenv').config({ path: '.env.local' });
 
@@ -15,6 +16,7 @@ const NEWS_URL = "https://coinmarketcap.com/headlines/news/";
 const telegramClient = new TelegramClient(TELEGRAM_TOKEN, TELEGRAM_CHAT_ID);
 const deepSeekClient = new DeepSeekClient(DEEPSEEK_TOKEN);
 const chatService = new ChatService();
+const twitterClient = new TwitterClient();
 
 class TarefaService {
 
@@ -28,8 +30,8 @@ class TarefaService {
             const priceElement = $('span[data-test="text-cdp-price-display"]');
             return priceElement.text().trim();
         } catch (error) {
-            console.error("Erro ao obter o preço do Bitcoin:", error.message);
-            return null;
+            throw new Error("Erro ao obter o preço do Bitcoin: " + error.message);
+
         }
     }
 
@@ -64,18 +66,15 @@ class TarefaService {
 
             const scriptData = $("#__NEXT_DATA__").html();
             if (!scriptData) {
-                console.error("Script JSON não encontrado!");
-                return null;
+                new Error("Script JSON não encontrado!");
             }
 
             const jsonData = JSON.parse(scriptData);
 
             const article = jsonData.props.pageProps.article;
 
-            if (!article) {
-                console.error("Dados do artigo não encontrados!");
-                return null;
-            }
+            if (!article)
+                new Error("Dados do artigo não encontrados!");
 
             return {
                 title: article.title,
@@ -108,19 +107,32 @@ class TarefaService {
 
         } while (true);
 
-
-        let newsletter = await deepSeekClient.chat({
+        let deepseek = await deepSeekClient.chat({
             model: "deepseek-chat",
             messages: [
                 {
                     role: "user",
-                    content: "Crie um texto em português do brasil, no estilo newslatter para o Telegram. Deve ser uma rapida leitura, utilize os seguintes dados: " + JSON.stringify(noticia)
+                    content: "Crie um texto em português do brasil, no estilo newsletter para o Telegram sem limite de caracteres e um texto com 300 caracteres para um tweet. " +
+                        "Retorne com o formato \"TELEGRAM: texto para a newsletter\n" +
+                        "TWEET: texto para o tweet\". Deve ser uma rapida leitura, utilize os seguintes dados: " + JSON.stringify(noticia)
                 }
             ],
             stream: false
         })
 
-        await this.enviarMensagemTelegram(newsletter.message.content);
+        const regex = /\*\*TELEGRAM:\*\*\s*([\s\S]*?)\n\n\*\*TWEET:\*\*\s*([\s\S]*)/;
+        const match = deepseek.message.content.match(regex);
+
+        if (match) {
+            const telegramContent = match[1].trim();
+            const tweetContent = match[2].trim();
+
+            this.enviarMensagemTelegram(telegramContent);
+            twitterClient.tweet(tweetContent);
+
+        } else {
+            throw new Error("Não foi possível extrair os textos do deepseek.");
+        }
     }
 
     async enviarPreco() {

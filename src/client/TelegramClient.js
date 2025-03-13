@@ -30,7 +30,7 @@ class TelegramClient {
             });
             console.log("Mensagem enviada com sucesso!");
         } catch (error) {
-            console.error("Erro ao enviar mensagem no Telegram:", error.message);
+            throw new Error("Erro ao enviar mensagem no Telegram: " + error.message);
         }
     }
 }
