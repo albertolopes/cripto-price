@@ -127,8 +127,8 @@ class TarefaService {
             const telegramContent = match[1].trim();
             const tweetContent = match[2].trim();
 
-            this.enviarMensagemTelegram(telegramContent);
-            twitterClient.tweet(tweetContent);
+            await this.enviarMensagemTelegram(telegramContent);
+            await twitterClient.tweet(tweetContent);
 
         } else {
             throw new Error("Não foi possível extrair os textos do deepseek.");
