@@ -14,7 +14,8 @@ class ChatService {
             service: 'TELEGRAM',
             username: chat.message.chat.username || null,
             first_name: chat.message.chat.first_name || null,
-            last_name: chat.message.chat.last_name || null
+            last_name: chat.message.chat.last_name || null,
+            active: true
           }));
 
       if (chatData.length === 0) {
