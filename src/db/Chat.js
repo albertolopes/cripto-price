@@ -28,9 +28,17 @@ const chatSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now
+  },
+  active: {
+    type: Boolean,
+    required: false
   }
 });
 
-const Chat = mongoose.model('Chat', chatSchema);
+const Chat = mongoose.model(
+    'Chat',
+    chatSchema,
+    process.env.NODE_ENV
+);
 
 module.exports = Chat;

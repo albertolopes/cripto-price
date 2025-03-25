@@ -41,8 +41,7 @@ class ChatService {
 
   async getAllChats() {
     try {
-      const chats = await Chat.find({});
-      return chats;
+      return await Chat.find({}).exec();
     } catch (error) {
       throw new Error(error)
     }
