@@ -40,7 +40,7 @@ This project is an API that powers an AI-driven bot focused on delivering **real
 
 🇺🇸
 - 📰 Generates **short and relevant crypto news**  
-- 💰 **24/7 price updates** on major coins  
+- 💰 **24/7 price updates** 
 - 🤖 **AI automation** via DeepSeek  
 - 📡 Automatic posts to Telegram and X (Twitter)  
 - 🔁 Task scheduling powered by **GitHub Actions**
@@ -56,9 +56,3 @@ This project is an API that powers an AI-driven bot focused on delivering **real
 🇺🇸
 - **Telegram**: [t.me/AvocadreamBot](https://t.me/AvocadreamBot)  
 - **X (Twitter)**: [@avocado_x_bot](https://x.com/avocado_x_bot)
-
----
-
-## 📁 Estrutura do Projeto | 📁 Project Structure
-
-🇧🇷
