@@ -127,12 +127,21 @@ class TarefaService {
             const telegramContent = match[1].trim();
             const tweetContent = match[2].trim();
 
-            await this.enviarMensagemTelegram(telegramContent);
-            await twitterClient.tweet(tweetContent);
+            this.enviarMensagemTelegram(telegramContent);
+            twitterClient.tweet(tweetContent);
 
         } else {
             throw new Error("Não foi possível extrair os textos do deepseek.");
         }
+    }
+
+    async enviarTweet(){
+        try{
+            throw new Error("Não foi possível extrair os textos do deepseek.");
+        } catch (e) {
+            await twitterClient.tweet("Teste");
+        }
+
     }
 
     async enviarPreco() {
@@ -145,22 +154,36 @@ class TarefaService {
         await this.enviarMensagemTelegram(message);
     }
 
+    async buscarChats(){
+        return await chatService.getAllChats();
+    }
+
     async enviarMensagemTelegram(message) {
         let chats = await telegramClient.buscarChats();
+
+        let teste = await chatService.getAllChats();
 
         await chatService.saveChats(chats.result);
 
         let allChats = await chatService.getAllChats();
 
         const uniqueChatIds = new Set();
+        const inativeChats = [];
 
         for (const chat of allChats) {
             const chatId = chat.chat_id;
             if (!uniqueChatIds.has(chatId)) {
                 uniqueChatIds.add(chatId);
-                await telegramClient.sendTelegramMessage(chatId, message);
+                const result = await telegramClient.sendTelegramMessage(chatId, message);
+
+                if (result && result.reason === "blocked")
+                    inativeChats.push({ chat_id: chatId, active: false });
+
             }
         }
+
+        if (inativeChats.length > 0)
+            await chatService.saveChats(inativeChats);
     }
 }
 

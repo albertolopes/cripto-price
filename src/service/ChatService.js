@@ -40,7 +40,7 @@ class ChatService {
     }
   }
 
-  async getAllChats() {
+  async getAllChats(filter = { active: true }) {
     try {
       return await Chat.find({}).exec();
     } catch (error) {
