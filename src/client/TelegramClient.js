@@ -30,7 +30,16 @@ class TelegramClient {
             });
             console.log("Mensagem enviada com sucesso!");
         } catch (error) {
-            throw new Error("Erro ao enviar mensagem no Telegram: " + error.message);
+            if (error.response) {
+                const { status, data } = error.response;
+
+                if (status === 403 && data.description.includes("Forbidden: bot was blocked by the user")) {
+                    console.log(`Usuário ${id} bloqueou o bot.`);
+                    return { success: false, active: false, reason: "blocked" };
+                }
+            }
+
+            throw new Error("Erro ao enviar mensagem no Telegram: " + error);
         }
     }
 }
