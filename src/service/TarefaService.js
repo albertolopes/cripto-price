@@ -4,6 +4,7 @@ const TelegramClient = require("../client/TelegramClient");
 const DeepSeekClient = require("../client/DeepSeekClient")
 const ChatService = require("./ChatService")
 const TwitterClient = require("../client/TwitterClient")
+const NoticiaService = require("./NoticiaService")
 
 require('dotenv').config({ path: '.env.local' });
 
@@ -17,6 +18,7 @@ const telegramClient = new TelegramClient(TELEGRAM_TOKEN, TELEGRAM_CHAT_ID);
 const deepSeekClient = new DeepSeekClient(DEEPSEEK_TOKEN);
 const chatService = new ChatService();
 const twitterClient = new TwitterClient();
+const noticiaService = new NoticiaService();
 
 class TarefaService {
 
@@ -112,7 +114,7 @@ class TarefaService {
             messages: [
                 {
                     role: "user",
-                    content: "Crie um texto em português do brasil, no estilo newsletter para o Telegram sem limite de caracteres e um texto com 300 caracteres para um tweet. " +
+                    content: "Crie um texto em português do brasil, no estilo newsletter para o Telegram e um site de noticias sem limite de caracteres e um texto com 300 caracteres para um tweet. " +
                         "Retorne com o formato \"TELEGRAM: texto para a newsletter\n" +
                         "TWEET: texto para o tweet\". Deve ser uma rapida leitura, utilize os seguintes dados: " + JSON.stringify(noticia)
                 }
@@ -124,6 +126,7 @@ class TarefaService {
         const match = deepseek.message.content.match(regex);
 
         if (match) {
+            await noticiaService.salvarNoticiaDoMatch(match, links[tentativa])
             const telegramContent = match[1].trim();
             const tweetContent = match[2].trim();
 
