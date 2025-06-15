@@ -37,8 +37,7 @@ const chatSchema = new mongoose.Schema({
 
 const Chat = mongoose.model(
     'Chat',
-    chatSchema,
-    process.env.NODE_ENV
+    chatSchema
 );
 
 module.exports = Chat;

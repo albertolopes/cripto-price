@@ -29,8 +29,7 @@ const noticiaSchema = new mongoose.Schema({
 
 const Noticia = mongoose.model(
     'Noticia',
-    noticiaSchema,
-    process.env.NODE_ENV
+    noticiaSchema
 );
 
 module.exports = Noticia;
