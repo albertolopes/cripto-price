@@ -65,4 +65,13 @@ router.get('/noticias', async (req, res) => {
     }
 });
 
+router.get("/trending", async (req, res) => {
+    try {
+        const data = await scheduleService.getTrendingCryptos();
+        res.json(data);
+    } catch (err) {
+        res.status(500).json({ error: "Erro ao buscar criptos em tendência." });
+    }
+});
+
 module.exports = router;

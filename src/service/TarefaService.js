@@ -25,6 +25,40 @@ class TarefaService {
     constructor() {
     }
 
+    async getTrendingCryptos() {
+        const url = "https://coinmarketcap.com/trending-cryptocurrencies/";
+
+        try {
+            const { data } = await axios.get(url, {
+                headers: { "User-Agent": "Mozilla/5.0" }
+            });
+
+            const $ = cheerio.load(data);
+            const rows = $("tbody tr");
+            const result = [];
+
+            rows.each((_, el) => {
+                const tds = $(el).find("td");
+
+                // Nome: primeiro <p> dentro do td[2]
+                const name = tds.eq(2).find("p").first().text().trim();
+
+                // Símbolo: <p> com a classe .coin-item-symbol dentro do td[2]
+                const symbol = tds.eq(2).find("p.coin-item-symbol").text().trim();
+
+                // Preço: pegar texto limpo no td[3]
+                const price = tds.eq(3).text().replace(/\s/g, '').trim();
+
+                result.push({ name, symbol, price });
+            });
+
+            return result;
+        } catch (err) {
+            console.error("Erro ao buscar criptomoedas:", err.message);
+            throw err;
+        }
+    }
+
     async getBitcoinPrice() {
         try {
             const { data } = await axios.get(URL);
