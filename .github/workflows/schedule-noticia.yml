@@ -2,7 +2,7 @@ name: Schedule noticia
 
 on:
   schedule:
-    - cron: "0 8-22/2 * * *"  # Roda a cada 2 horas entre 08:00 e 22:00
+    - cron: "0 8-22/1 * * *"  # Roda a cada 1 hora entre 08:00 e 22:00
   workflow_dispatch:  # Permite execução manual
 
 jobs:
