@@ -5,7 +5,7 @@ class NoticiaService {
 
 
     async salvarNoticiaDoMatch(match, linkOrigem) {
-        if (!match || !match[1] || !match[2]) {
+        if (!match || !match[1] || !match[2] || !match[3]) {
             throw new Error('Formato do match inválido');
         }
 
@@ -16,7 +16,7 @@ class NoticiaService {
         const titulo = tituloMatch[1];
 
         const resumo = match[2];
-        const textoCompleto = match[1];
+        const textoCompleto = match[3];
 
         const data = new Date();
 

@@ -22,7 +22,6 @@ class TwitterClient {
             return response;
         } catch (error) {
             console.error('❌ Erro ao enviar tweet:', error);
-            throw new Error(error);
         }
     }
 }

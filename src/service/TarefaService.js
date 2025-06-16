@@ -114,15 +114,16 @@ class TarefaService {
             messages: [
                 {
                     role: "user",
-                    content: "Crie um texto em português do brasil, no estilo newsletter para o Telegram e um site de noticias sem limite de caracteres e um texto com 300 caracteres para um tweet. " +
+                    content: "Crie um texto em português do brasil, no estilo newsletter para o Telegram e texto para um site de noticias sem limite de caracteres e um texto com 300 caracteres para um tweet. " +
                         "Retorne com o formato \"TELEGRAM: texto para a newsletter\n" +
-                        "TWEET: texto para o tweet\". Deve ser uma rapida leitura, utilize os seguintes dados: " + JSON.stringify(noticia)
+                        "TWEET: texto para o tweet\n WEB: textos maiores sem imagens" +
+                        "Deve ser uma rapida leitura, utilize os seguintes dados: " + JSON.stringify(noticia)
                 }
             ],
             stream: false
         })
 
-        const regex = /\*\*TELEGRAM:\*\*\s*([\s\S]*?)\n\n\*\*TWEET:\*\*\s*([\s\S]*)/;
+        const regex = /\*\*TELEGRAM:\*\*\s*([\s\S]*?)\n\*\*TWEET:\*\*\s*([\s\S]*?)\n\*\*WEB:\*\*\s*([\s\S]*)/;
         const match = deepseek.message.content.match(regex);
 
         if (match) {
@@ -130,9 +131,8 @@ class TarefaService {
             const telegramContent = match[1].trim();
             const tweetContent = match[2].trim();
 
-            await twitterClient.tweet(tweetContent);
             await this.enviarMensagemTelegram(telegramContent);
-
+            await twitterClient.tweet(tweetContent);
 
         } else {
             throw new Error("Não foi possível extrair os textos do deepseek.");
