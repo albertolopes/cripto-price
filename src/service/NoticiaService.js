@@ -69,6 +69,44 @@ class NoticiaService {
             throw new Error(`Erro ao buscar notícias: ${error.message}`);
         }
     }
+
+    async buscarNoticiasPorPalavraChave(palavraChave, page = 1, limit = 10) {
+        try {
+            const skip = (page - 1) * limit;
+
+            // Criar regex case-insensitive para busca
+            const regex = new RegExp(palavraChave, 'i');
+
+            // Buscar notícias que contenham a palavra-chave no título OU no texto completo
+            const query = {
+                $or: [
+                    { titulo: regex },
+                    { textoCompleto: regex }
+                ]
+            };
+
+            const results = await Noticia.find(query)
+                .sort({ data: -1 })
+                .skip(skip)
+                .limit(limit)
+                .exec();
+
+            const totalResults = await Noticia.countDocuments(query);
+
+            const totalPages = Math.ceil(totalResults / limit);
+
+            return {
+                results,
+                page,
+                limit,
+                totalPages,
+                totalResults,
+                palavraChave
+            };
+        } catch (error) {
+            throw new Error(`Erro ao buscar notícias por palavra-chave: ${error.message}`);
+        }
+    }
 }
 
 module.exports = NoticiaService;
