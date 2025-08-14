@@ -79,6 +79,30 @@ GET /noticias?limit=5
 GET /trending
 ```
 
+#### 3. Controle de Acessos
+
+**Registrar Acesso:**
+```
+POST /acesso
+```
+Registra automaticamente o IP e User-Agent do visitante.
+
+**Total de Acessos:**
+```
+GET /acessos/total
+```
+Retorna o número total de acessos registrados.
+
+**Acessos por Período:**
+```
+GET /acessos/periodo?inicio=2024-01-01&fim=2024-01-31
+```
+Retorna acessos em um período específico.
+
+**Parâmetros:**
+- `inicio` (opcional): Data de início (YYYY-MM-DD)
+- `fim` (opcional): Data de fim (YYYY-MM-DD)
+
 ## 🔧 Estrutura do Projeto
 
 ```
@@ -134,7 +158,15 @@ curl "http://localhost:3000/noticias?q=ethereum&page=2&limit=5"
 
 # Criptomoedas em tendência
 curl http://localhost:3000/trending
-```
+
+# Registrar acesso
+curl -X POST http://localhost:3000/acesso
+
+# Total de acessos
+curl http://localhost:3000/acessos/total
+
+# Acessos por período
+curl "http://localhost:3000/acessos/periodo?inicio=2024-01-01&fim=2024-01-31"
 
 ### Usando Swagger UI
 

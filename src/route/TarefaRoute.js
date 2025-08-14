@@ -1,10 +1,12 @@
 const express = require("express");
 const ScheduleService = require("../service/TarefaService");
 const NoticiaService = require("../service/NoticiaService");
+const AcessoService = require("../service/AcessoService");
 
 const router = express.Router();
 const scheduleService = new ScheduleService();
 const noticiaService = new NoticiaService();
+const acessoService = new AcessoService();
 
 /**
  * @swagger
@@ -251,6 +253,165 @@ router.get("/trending", async (req, res) => {
         res.json(data);
     } catch (err) {
         res.status(500).json({ error: "Erro ao buscar criptos em tendência." });
+    }
+});
+
+/**
+ * @swagger
+ * /acesso:
+ *   post:
+ *     summary: Registra um novo acesso ao site
+ *     description: Salva um registro de acesso com data/hora, IP e User-Agent do visitante
+ *     tags: [Acessos]
+ *     responses:
+ *       200:
+ *         description: Acesso registrado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 acesso:
+ *                   type: object
+ *                   properties:
+ *                     _id:
+ *                       type: string
+ *                     data:
+ *                       type: string
+ *                       format: date-time
+ *                     ip:
+ *                       type: string
+ *                     userAgent:
+ *                       type: string
+ *       500:
+ *         description: Erro ao registrar acesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
+router.post("/acesso", async (req, res) => {
+    try {
+
+        let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.ip;
+
+        if (ip && typeof ip === 'string' && ip.includes(',')) {
+            ip = ip.split(',')[0].trim();
+        }
+
+        const userAgent = req.headers['user-agent'];
+
+        const acesso = await acessoService.registrarAcesso(ip, userAgent);
+
+        res.status(200).json({
+            message: "Acesso registrado com sucesso",
+            acesso: {
+                _id: acesso._id,
+                data: acesso.data,
+                ip: acesso.ip,
+                userAgent: acesso.userAgent
+            }
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+/**
+ * @swagger
+ * /acessos/total:
+ *   get:
+ *     summary: Busca o total de acessos ao site
+ *     description: Retorna a contagem total de acessos registrados no sistema
+ *     tags: [Acessos]
+ *     responses:
+ *       200:
+ *         description: Total de acessos retornado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 total:
+ *                   type: integer
+ *                   description: Número total de acessos
+ *                 dataConsulta:
+ *                   type: string
+ *                   format: date-time
+ *                   description: Data e hora da consulta
+ *       500:
+ *         description: Erro ao buscar total de acessos
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
+router.get("/acessos/total", async (req, res) => {
+    try {
+        const resultado = await acessoService.getTotalAcessos();
+        res.status(200).json(resultado);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+/**
+ * @swagger
+ * /acessos/periodo:
+ *   get:
+ *     summary: Busca acessos por período
+ *     description: Retorna a contagem de acessos em um período específico
+ *     tags: [Acessos]
+ *     parameters:
+ *       - in: query
+ *         name: inicio
+ *         schema:
+ *           type: string
+ *           format: date
+ *         description: Data de início (YYYY-MM-DD)
+ *       - in: query
+ *         name: fim
+ *         schema:
+ *           type: string
+ *           format: date
+ *         description: Data de fim (YYYY-MM-DD)
+ *     responses:
+ *       200:
+ *         description: Acessos do período retornados com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 total:
+ *                   type: integer
+ *                   description: Número de acessos no período
+ *                 periodo:
+ *                   type: object
+ *                   properties:
+ *                     inicio:
+ *                       type: string
+ *                     fim:
+ *                       type: string
+ *                 dataConsulta:
+ *                   type: string
+ *                   format: date-time
+ *       500:
+ *         description: Erro ao buscar acessos por período
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
+router.get("/acessos/periodo", async (req, res) => {
+    try {
+        const { inicio, fim } = req.query;
+        const resultado = await acessoService.getAcessosPorPeriodo(inicio, fim);
+        res.status(200).json(resultado);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
 });
 
