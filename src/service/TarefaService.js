@@ -11,7 +11,9 @@ require('dotenv').config({ path: '.env.local' });
 const TELEGRAM_TOKEN = process.env.TELEGRAM_TOKEN;
 const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 const DEEPSEEK_TOKEN = process.env.DEEPSEEK_TOKEN;
-const URL = "https://coinmarketcap.com/currencies/bitcoin/";
+const URL_BITCOIN = "https://coinmarketcap.com/currencies/bitcoin/";
+const URL_SOLANA = "https://coinmarketcap.com/currencies/solana/";
+const URL_ETH = "https://coinmarketcap.com/currencies/ethereum/";
 const NEWS_URL = "https://coinmarketcap.com/headlines/news/";
 
 const telegramClient = new TelegramClient(TELEGRAM_TOKEN, TELEGRAM_CHAT_ID);
@@ -59,9 +61,9 @@ class TarefaService {
         }
     }
 
-    async getBitcoinPrice() {
+    async getBitcoinPrice(url) {
         try {
-            const { data } = await axios.get(URL);
+            const { data } = await axios.get(url);
             const $ = cheerio.load(data);
             const priceElement = $('span[data-test="text-cdp-price-display"]');
             return priceElement.text().trim();
@@ -184,10 +186,14 @@ class TarefaService {
 
     async enviarPreco() {
 
-        let price = await this.getBitcoinPrice();
+        let priceBitcoin = await this.getBitcoinPrice(URL_BITCOIN);
+        let priceSolana = await this.getBitcoinPrice(URL_SOLANA);
+        let priceEth = await this.getBitcoinPrice(URL_ETH);
 
-        const message = `📢 *Atualização do Bitcoin* 🚀\n\n` +
-            `💰 *Preço atual:*  ${price.toLocaleString("en-US", { style: "currency", currency: "USD" })}`;
+        const message = `📢 *Atualizações do mercado cripto* 🚀\n\n` +
+            `💰 *Preço Bitcoin:*  ${priceBitcoin.toLocaleString("en-US", { style: "currency", currency: "USD" })} \n\n` +
+            `💰 *Preço Solana:*  ${priceSolana.toLocaleString("en-US", { style: "currency", currency: "USD" })} \n\n`+
+            `💰 *Preço Ethereum:*  ${priceEth.toLocaleString("en-US", { style: "currency", currency: "USD" })} `;
 
         await this.enviarMensagemTelegram(message);
     }
@@ -198,8 +204,6 @@ class TarefaService {
 
     async enviarMensagemTelegram(message) {
         let chats = await telegramClient.buscarChats();
-
-        let teste = await chatService.getAllChats();
 
         await chatService.saveChats(chats.result);
 
